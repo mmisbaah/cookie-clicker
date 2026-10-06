@@ -229,3 +229,22 @@ imports. Test files count as consumers there, because a helper that exists so a
 test can reach it is a legitimate seam — `isKnownEffect` validates the balance
 tables, `applyGoldenEffect` gives a deterministic entry point into a randomised
 system.
+
+---
+
+## Deployment
+
+The game is live at **<https://cookieclicker.atollingo.com>**, on Cloudflare Pages
+(project `cookieclicker-atollingo`).
+
+In development the game is served from two roots — `public/` at `/` and `shared/`
+at `/shared/` — because the client imports the rules layer directly and the tests
+must see the same files. A static host has one root, so before deploying:
+
+```
+node tools/deploy.mjs   # assembles dist/ = public/ + shared/
+```
+
+`dist/` is byte-identical to the repo: packaging, not a build step. `dist/` is
+gitignored; the site in git plus `node tools/deploy.mjs` is reproducible.
+
