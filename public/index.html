@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="classic">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="An idle cookie empire: buildings, research, ascension, a garden and a stock market.">
+<title>Cookie Empire</title>
+<link rel="stylesheet" href="./style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍪</text></svg>">
+</head>
+<body>
+
+<!-- ============================================================ THE STAGE -->
+<main id="stage">
+
+  <header id="hud">
+    <div class="hud-figures">
+      <span id="hud-cookies" class="hud-cookies">0</span>
+      <span class="hud-unit">cookies</span>
+    </div>
+
+    <dl class="hud-rates">
+      <div class="hud-rate"><dt>/sec</dt><dd id="hud-cps">0</dd></div>
+      <div class="hud-rate"><dt>/click</dt><dd id="hud-cpc">1</dd></div>
+      <div class="hud-rate hud-rate--wide"><dt>lifetime</dt><dd id="hud-lifetime">0</dd></div>
+    </dl>
+
+    <div id="hud-buffs" class="hud-buffs" aria-live="off"></div>
+
+    <button id="pause" class="icon-btn" type="button" aria-label="Pause and save">❚❚</button>
+  </header>
+
+  <div id="play-area">
+    <button id="cookie" class="cookie" type="button" aria-label="Bake a cookie">
+      <span class="cookie-face" data-cookie-face aria-hidden="true">🍪</span>
+    </button>
+
+    <div id="ability-bar" class="ability-bar" role="toolbar" aria-label="Abilities"></div>
+
+    <p class="hint" id="play-hint">
+      Tap the cookie. Buy buildings. Come back later and it keeps baking.
+    </p>
+  </div>
+
+  <div id="goldens" class="goldens" aria-live="off"></div>
+  <div id="click-layer" class="click-layer" aria-hidden="true"></div>
+
+  <nav id="nav" class="nav" aria-label="Sections">
+    <button class="nav-btn" type="button" data-page="shop">
+      <span class="nav-icon" data-icon="🛒" aria-hidden="true">🛒</span>
+      <span class="nav-label">Shop</span>
+      <span id="badge-shop" class="nav-badge" aria-hidden="true"></span>
+    </button>
+    <button class="nav-btn" type="button" data-page="play">
+      <span class="nav-icon" data-icon="🌱" aria-hidden="true">🌱</span>
+      <span class="nav-label">Play</span>
+      <span id="badge-play" class="nav-badge" aria-hidden="true"></span>
+    </button>
+    <button class="nav-btn" type="button" data-page="awards">
+      <span class="nav-icon" data-icon="🏆" aria-hidden="true">🏆</span>
+      <span class="nav-label">Awards</span>
+      <span id="badge-awards" class="nav-badge" aria-hidden="true"></span>
+    </button>
+    <button class="nav-btn" type="button" data-page="look">
+      <span class="nav-icon" data-icon="🎨" aria-hidden="true">🎨</span>
+      <span class="nav-label">Look</span>
+    </button>
+    <button class="nav-btn" type="button" data-page="settings">
+      <span class="nav-icon" data-icon="⚙️" aria-hidden="true">⚙️</span>
+      <span class="nav-label">More</span>
+    </button>
+  </nav>
+</main>
+
+<!-- ============================================================== PANELS -->
+
+<section id="page-shop" class="page">
+  <header class="page-head">
+    <button class="icon-btn nav-back" type="button" data-back aria-label="Close">←</button>
+    <h2 class="page-title">Shop</h2>
+  </header>
+
+  <div class="page-body">
+    <div id="shop-primary" class="strip" role="tablist" aria-label="Shop sections"></div>
+    <div id="shop-sub" class="strip strip--sub" role="tablist" aria-label="Shop category"></div>
+
+    <div class="shop-controls">
+      <div class="search">
+        <span class="search-icon" data-icon="🔍" aria-hidden="true">🔍</span>
+        <input id="shop-search" type="search" placeholder="Search buildings and upgrades…"
+               autocomplete="off" spellcheck="false" aria-label="Search the shop">
+        <button id="shop-search-clear" class="search-clear" type="button" aria-label="Clear search">✕</button>
+      </div>
+
+      <div class="control-row">
+        <div id="shop-filters" class="strip strip--sm" role="group" aria-label="Filter"></div>
+        <span id="shop-count" class="result-count"></span>
+      </div>
+
+      <div id="buy-amount" class="control-row" role="group" aria-label="Buy amount">
+        <span class="control-label">Buy</span>
+      </div>
+    </div>
+
+    <div id="shop-list" class="tile-list"></div>
+
+    <div id="page-strip" class="page-strip" hidden>
+      <button id="page-prev" class="btn btn--ghost" type="button" aria-label="Previous page">◀</button>
+      <span id="page-label" class="page-label"></span>
+      <button id="page-next" class="btn btn--ghost" type="button" aria-label="Next page">▶</button>
+    </div>
+  </div>
+</section>
+
+<section id="page-play" class="page">
+  <header class="page-head">
+    <button class="icon-btn nav-back" type="button" data-back aria-label="Close">←</button>
+    <h2 class="page-title">Garden &amp; Market</h2>
+  </header>
+
+  <div class="page-body">
+    <div class="panel-note">
+      Seeds are priced from your production, so the garden scales with your empire.
+      Planting always costs more than it pays -- the crop is the reward for waiting.
+    </div>
+
+    <h3 class="section-title"><span data-icon="🌱" aria-hidden="true">🌱</span> Garden</h3>
+    <div id="garden-summary" class="panel-summary"></div>
+    <div id="garden-grid" class="garden"></div>
+
+    <h3 class="section-title"><span data-icon="📈" aria-hidden="true">📈</span> Market</h3>
+    <div id="market-summary" class="panel-summary"></div>
+    <div id="market-list" class="market"></div>
+  </div>
+</section>
+
+<section id="page-awards" class="page">
+  <header class="page-head">
+    <button class="icon-btn nav-back" type="button" data-back aria-label="Close">←</button>
+    <h2 class="page-title">Awards</h2>
+  </header>
+
+  <div class="page-body">
+    <div id="awards-summary" class="awards-summary"></div>
+    <div id="awards-list" class="awards-list"></div>
+  </div>
+</section>
+
+<section id="page-look" class="page">
+  <header class="page-head">
+    <button class="icon-btn nav-back" type="button" data-back aria-label="Close">←</button>
+    <h2 class="page-title">Look</h2>
+  </header>
+
+  <div class="page-body">
+    <h3 class="section-title"><span data-icon="🎨" aria-hidden="true">🎨</span> Themes</h3>
+    <div id="theme-grid" class="theme-grid"></div>
+
+    <h3 class="section-title"><span data-icon="🍪" aria-hidden="true">🍪</span> Cookie skins</h3>
+    <div id="skin-grid" class="skin-grid"></div>
+
+    <h3 class="section-title"><span data-icon="🔤" aria-hidden="true">🔤</span> Text size</h3>
+    <div id="font-scale" class="strip strip--sm" role="group" aria-label="Text size"></div>
+
+    <h3 class="section-title"><span data-icon="✨" aria-hidden="true">✨</span> Motion</h3>
+    <button id="motion-toggle" class="toggle" type="button" role="switch"
+            aria-checked="false" aria-label="Reduce animations">
+      <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      <span class="toggle-label">Reduce animations</span>
+    </button>
+  </div>
+</section>
+
+<section id="page-settings" class="page">
+  <header class="page-head">
+    <button class="icon-btn nav-back" type="button" data-back aria-label="Close">←</button>
+    <h2 class="page-title">More</h2>
+  </header>
+
+  <div class="page-body">
+    <div id="stats-body" class="stats"></div>
+
+    <div id="ascend-bar" class="ascend-bar"></div>
+
+    <h3 class="section-title"><span data-icon="💾" aria-hidden="true">💾</span> Save</h3>
+    <div class="button-row">
+      <button id="export-save" class="btn btn--ghost" type="button">Export save</button>
+      <button id="import-save" class="btn btn--ghost" type="button">Import save</button>
+    </div>
+
+    <h3 class="section-title"><span data-icon="🗑️" aria-hidden="true">🗑️</span> Reset</h3>
+    <button id="reset-visual" class="btn btn--danger" type="button">Reset visual settings</button>
+    <button id="new-game" class="btn btn--danger" type="button">Start over — delete everything</button>
+  </div>
+</section>
+
+<!-- =========================================================== OVERLAYS -->
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
+
+<div id="dialog-layer" class="dialog-layer" aria-hidden="true"></div>
+
+<div id="pause-screen" class="pause-screen" hidden>
+  <div class="pause-card">
+    <h2>Paused</h2>
+    <p>Saved. Production continues while you are away.</p>
+    <button id="resume" class="btn btn--buy" type="button">Resume</button>
+  </div>
+</div>
+
+<noscript>
+  <p style="padding:2rem;text-align:center">This game needs JavaScript. It is entirely client-side — nothing is sent anywhere.</p>
+</noscript>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
