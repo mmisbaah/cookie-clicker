@@ -16,3 +16,7 @@ Thumbs.db
 
 # Anything meant to stay on this machine
 *.local
+
+# Assembled by tools/deploy.mjs for static hosting. The game itself has no
+# build step; this directory is packaging only and is never the source of truth.
+dist/
